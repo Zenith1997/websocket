@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generative AI Chat</title>
+</head>
+<body>
+  <input type="text" id="input" placeholder="Enter a string">
+  <button onclick="sendMessage()">Send</button>
+  
+  <script>
+    const socket = new WebSocket('ws://localhost:8080');
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    socket.onmessage = (event) => {
+      console.log('Received from server:', event.data);
+      // Do something with the generated text, e.g., display it on the page
+      document.getElementById('output').innerText = event.data;
+    };
+
+    function sendMessage() {
+      const input = document.getElementById('input').value;
+      socket.send(input);
+    }
+  </script>
+</body>
+</html>
