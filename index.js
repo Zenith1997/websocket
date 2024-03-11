@@ -1,38 +1,28 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-require('dotenv').config();
-const readline = require('readline');
-const genAI = new GoogleGenerativeAI(process.env.API_KEY);
-
-
-
-
-async function run() { 
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-
-  rl.question('Enter a message: ', async (inputString) => {
-    //console.log(`You entered: ${inputString}`);
-    rl.close();
-
-    try {
-      // For text-only input, use the gemini-pro model
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-      const prompt = inputString;
-
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
-      console.log(text);
-    } catch (error) {
-      console.error('Error:', error.message);
+// Importing the required modules
+const WebSocketServer = require('ws');
+ 
+// Creating a new websocket server
+const wss = new WebSocketServer.Server({ port: 8080 })
+ 
+// Creating connection using websocket
+wss.on("connection", ws => {
+    console.log("new client connected");
+ 
+    // sending message to client
+    ws.send('Welcome, you are connected!');
+ 
+    //on message from client
+    ws.on("message", data => {
+        console.log(`Client has sent us: ${data}`)
+    });
+ 
+    // handling what to do when clients disconnects from server
+    ws.on("close", () => {
+        console.log("the client has connected");
+    });
+    // handling client connection error
+    ws.onerror = function () {
+        console.log("Some Error occurred")
     }
-
-    // Call run() again to make the code recursive
-    run();
-  });
-}
-
-run();
+});
+console.log("The WebSocket server is running on port 8080");
